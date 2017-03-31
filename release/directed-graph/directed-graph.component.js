@@ -4,37 +4,38 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var core_1 = require('@angular/core');
-var ngx_charts_1 = require('@swimlane/ngx-charts');
-var d3_1 = require('../d3');
-var dagre = require('dagre');
-var utils_1 = require('../utils');
+var core_1 = require("@angular/core");
+var ngx_charts_1 = require("@swimlane/ngx-charts");
+var d3_1 = require("../d3");
+var dagre = require("dagre");
+var utils_1 = require("../utils");
 var DirectedGraphComponent = (function (_super) {
     __extends(DirectedGraphComponent, _super);
     function DirectedGraphComponent() {
-        _super.apply(this, arguments);
-        this.nodes = [];
-        this.links = [];
-        this.activeEntries = [];
-        this.orientation = 'LR';
-        this.draggingEnabled = true;
-        this.panOffsetX = 0;
-        this.panOffsetY = 0;
-        this.panningEnabled = true;
-        this.zoomLevel = 1;
-        this.zoomSpeed = 0.1;
-        this.minZoomLevel = 0.1;
-        this.maxZoomLevel = 4.0;
-        this.activate = new core_1.EventEmitter();
-        this.deactivate = new core_1.EventEmitter();
-        this.margin = [0, 0, 0, 0];
-        this.results = [];
-        this.isPanning = false;
-        this.isDragging = false;
-        this.initialized = false;
-        this.graphDims = { width: 0, height: 0 };
-        this._oldLinks = [];
-        this.groupResultsBy = function (node) { return node.label; };
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.nodes = [];
+        _this.links = [];
+        _this.activeEntries = [];
+        _this.orientation = 'LR';
+        _this.draggingEnabled = true;
+        _this.panOffsetX = 0;
+        _this.panOffsetY = 0;
+        _this.panningEnabled = true;
+        _this.zoomLevel = 1;
+        _this.zoomSpeed = 0.1;
+        _this.minZoomLevel = 0.1;
+        _this.maxZoomLevel = 4.0;
+        _this.activate = new core_1.EventEmitter();
+        _this.deactivate = new core_1.EventEmitter();
+        _this.margin = [0, 0, 0, 0];
+        _this.results = [];
+        _this.isPanning = false;
+        _this.isDragging = false;
+        _this.initialized = false;
+        _this.graphDims = { width: 0, height: 0 };
+        _this._oldLinks = [];
+        _this.groupResultsBy = function (node) { return node.label; };
+        return _this;
     }
     /**
      * Angular lifecycle event
@@ -128,7 +129,7 @@ var DirectedGraphComponent = (function (_super) {
         });
         // Update the labels to the new positions
         var newLinks = [];
-        var _loop_1 = function(k) {
+        var _loop_1 = function (k) {
             var l = this_1.graph._edgeLabels[k];
             var normKey = k.replace(/[^\w]*/g, '');
             var oldLink = this_1._oldLinks.find(function (ol) { return "" + ol.source + ol.target === normKey; });
@@ -326,7 +327,7 @@ var DirectedGraphComponent = (function (_super) {
         var x = (node.x - (node.width / 2));
         var y = (node.y - (node.height / 2));
         node.options.transform = "translate(" + x + "px, " + y + "px)";
-        var _loop_2 = function(link) {
+        var _loop_2 = function (link) {
             if (link.target === node.id || link.source === node.id) {
                 var sourceNode = this_2._nodes.find(function (n) { return n.id === link.source; });
                 var targetNode = this_2._nodes.find(function (n) { return n.id === link.target; });
@@ -494,58 +495,58 @@ var DirectedGraphComponent = (function (_super) {
         this.isDragging = true;
         this.draggingNode = node;
     };
-    DirectedGraphComponent.decorators = [
-        { type: core_1.Component, args: [{
-                    selector: 'ngx-charts-directed-graph',
-                    template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendOptions]=\"legendOptions\"\n      (legendLabelClick)=\"onClick($event)\"\n      (legendLabelActivate)=\"onActivate($event)\"\n      (legendLabelDeactivate)=\"onDeactivate($event)\"\n      mouseWheel\n      (mouseWheelUp)=\"onZoom($event, 'in')\" \n      (mouseWheelDown)=\"onZoom($event, 'out')\">\n      <svg:g *ngIf=\"initialized\" [attr.transform]=\"transform\" class=\"directed-graph chart\">\n        <defs>\n          <template \n            *ngIf=\"defsTemplate\"\n            [ngTemplateOutlet]=\"defsTemplate\">\n          </template>\n          <svg:path \n            class=\"text-path\" \n            *ngFor=\"let link of _links\" \n            [attr.d]=\"link.textPath\" \n            [attr.id]=\"link.id\">\n          </svg:path>\n        </defs>\n        <svg:rect\n          class=\"panning-rect\"\n          [attr.width]=\"dims.width * 100\"\n          [attr.height]=\"dims.height * 100\"\n          [attr.transform]=\"'translate(' + (-dims.width * 50) +',' + (-dims.height*50) + ')' \"\n          (mousedown)=\"isPanning = true\"\n        />\n        <svg:g class=\"links\">\n          <svg:g \n            *ngFor=\"let link of _links; trackBy: trackLinkBy\"\n            class=\"link-group\"\n            #linkElement\n            [id]=\"link.id\">\n            <template \n              *ngIf=\"linkTemplate\"\n              [ngTemplateOutlet]=\"linkTemplate\"\n              [ngOutletContext]=\"{ $implicit: link }\">\n            </template>\n            <svg:path \n              *ngIf=\"!linkTemplate\"\n              class=\"edge\"\n              [attr.d]=\"link.line\"\n            />\n          </svg:g>\n        </svg:g>\n        <svg:g class=\"nodes\">\n          <svg:g \n            *ngFor=\"let node of _nodes; trackBy: trackNodeBy\"\n            class=\"node-group\"\n            #nodeElement\n            [id]=\"node.id\"\n            [style.transform]=\"node.options.transform\"\n            (click)=\"onClick(node)\"\n            (mousedown)=\"onNodeMouseDown($event, node)\">\n            <template \n              *ngIf=\"nodeTemplate\"\n              [ngTemplateOutlet]=\"nodeTemplate\"\n              [ngOutletContext]=\"{ $implicit: node }\">\n            </template>\n            <svg:circle \n              *ngIf=\"!nodeTemplate\"\n              r=\"10\"\n              [attr.cx]=\"node.width / 2\"\n              [attr.cy]=\"node.height / 2\"\n              [attr.fill]=\"node.options.color\" \n            />\n          </svg:g>\n        </svg:g>\n      </svg:g>\n    </ngx-charts-chart>\n  ",
-                    styleUrls: ['./directed-graph.component.css'],
-                    encapsulation: core_1.ViewEncapsulation.None,
-                    changeDetection: core_1.ChangeDetectionStrategy.OnPush,
-                    animations: [
-                        core_1.trigger('link', [
-                            core_1.transition('* => *', [
-                                core_1.animate(500, core_1.style({ transform: '*' }))
-                            ])
-                        ])
-                    ]
-                },] },
-    ];
-    /** @nocollapse */
-    DirectedGraphComponent.ctorParameters = function () { return []; };
-    DirectedGraphComponent.propDecorators = {
-        'legend': [{ type: core_1.Input },],
-        'nodes': [{ type: core_1.Input },],
-        'links': [{ type: core_1.Input },],
-        'activeEntries': [{ type: core_1.Input },],
-        'orientation': [{ type: core_1.Input },],
-        'curve': [{ type: core_1.Input },],
-        'draggingEnabled': [{ type: core_1.Input },],
-        'nodeHeight': [{ type: core_1.Input },],
-        'nodeMaxHeight': [{ type: core_1.Input },],
-        'nodeMinHeight': [{ type: core_1.Input },],
-        'nodeWidth': [{ type: core_1.Input },],
-        'nodeMinWidth': [{ type: core_1.Input },],
-        'nodeMaxWidth': [{ type: core_1.Input },],
-        'panOffsetX': [{ type: core_1.Input },],
-        'panOffsetY': [{ type: core_1.Input },],
-        'panningEnabled': [{ type: core_1.Input },],
-        'zoomLevel': [{ type: core_1.Input },],
-        'zoomSpeed': [{ type: core_1.Input },],
-        'minZoomLevel': [{ type: core_1.Input },],
-        'maxZoomLevel': [{ type: core_1.Input },],
-        'activate': [{ type: core_1.Output },],
-        'deactivate': [{ type: core_1.Output },],
-        'linkTemplate': [{ type: core_1.ContentChild, args: ['linkTemplate',] },],
-        'nodeTemplate': [{ type: core_1.ContentChild, args: ['nodeTemplate',] },],
-        'defsTemplate': [{ type: core_1.ContentChild, args: ['defsTemplate',] },],
-        'chart': [{ type: core_1.ViewChild, args: [ngx_charts_1.ChartComponent, { read: core_1.ElementRef },] },],
-        'nodeElements': [{ type: core_1.ViewChildren, args: ['nodeElement',] },],
-        'linkElements': [{ type: core_1.ViewChildren, args: ['linkElement',] },],
-        'groupResultsBy': [{ type: core_1.Input },],
-        'onMouseMove': [{ type: core_1.HostListener, args: ['document:mousemove', ['$event'],] },],
-        'onMouseUp': [{ type: core_1.HostListener, args: ['document:mouseup',] },],
-    };
     return DirectedGraphComponent;
 }(ngx_charts_1.BaseChartComponent));
+DirectedGraphComponent.decorators = [
+    { type: core_1.Component, args: [{
+                selector: 'ngx-charts-directed-graph',
+                template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendOptions]=\"legendOptions\"\n      (legendLabelClick)=\"onClick($event)\"\n      (legendLabelActivate)=\"onActivate($event)\"\n      (legendLabelDeactivate)=\"onDeactivate($event)\"\n      mouseWheel\n      (mouseWheelUp)=\"onZoom($event, 'in')\" \n      (mouseWheelDown)=\"onZoom($event, 'out')\">\n      <svg:g *ngIf=\"initialized\" [attr.transform]=\"transform\" class=\"directed-graph chart\">\n        <defs>\n          <ng-template \n            *ngIf=\"defsTemplate\"\n            [ngTemplateOutlet]=\"defsTemplate\">\n          </ng-template>\n          <svg:path \n            class=\"text-path\" \n            *ngFor=\"let link of _links\" \n            [attr.d]=\"link.textPath\" \n            [attr.id]=\"link.id\">\n          </svg:path>\n        </defs>\n        <svg:rect\n          class=\"panning-rect\"\n          [attr.width]=\"dims.width * 100\"\n          [attr.height]=\"dims.height * 100\"\n          [attr.transform]=\"'translate(' + (-dims.width * 50) +',' + (-dims.height*50) + ')' \"\n          (mousedown)=\"isPanning = true\"\n        />\n        <svg:g class=\"links\">\n          <svg:g \n            *ngFor=\"let link of _links; trackBy: trackLinkBy\"\n            class=\"link-group\"\n            #linkElement\n            [id]=\"link.id\">\n            <ng-template \n              *ngIf=\"linkTemplate\"\n              [ngTemplateOutlet]=\"linkTemplate\"\n              [ngOutletContext]=\"{ $implicit: link }\">\n            </ng-template>\n            <svg:path \n              *ngIf=\"!linkTemplate\"\n              class=\"edge\"\n              [attr.d]=\"link.line\"\n            />\n          </svg:g>\n        </svg:g>\n        <svg:g class=\"nodes\">\n          <svg:g \n            *ngFor=\"let node of _nodes; trackBy: trackNodeBy\"\n            class=\"node-group\"\n            #nodeElement\n            [id]=\"node.id\"\n            [style.transform]=\"node.options.transform\"\n            (click)=\"onClick(node)\"\n            (mousedown)=\"onNodeMouseDown($event, node)\">\n            <ng-template \n              *ngIf=\"nodeTemplate\"\n              [ngTemplateOutlet]=\"nodeTemplate\"\n              [ngOutletContext]=\"{ $implicit: node }\">\n            </ng-template>\n            <svg:circle \n              *ngIf=\"!nodeTemplate\"\n              r=\"10\"\n              [attr.cx]=\"node.width / 2\"\n              [attr.cy]=\"node.height / 2\"\n              [attr.fill]=\"node.options.color\" \n            />\n          </svg:g>\n        </svg:g>\n      </svg:g>\n    </ngx-charts-chart>\n  ",
+                styleUrls: ['./directed-graph.component.css'],
+                encapsulation: core_1.ViewEncapsulation.None,
+                changeDetection: core_1.ChangeDetectionStrategy.OnPush,
+                animations: [
+                    core_1.trigger('link', [
+                        core_1.transition('* => *', [
+                            core_1.animate(500, core_1.style({ transform: '*' }))
+                        ])
+                    ])
+                ]
+            },] },
+];
+/** @nocollapse */
+DirectedGraphComponent.ctorParameters = function () { return []; };
+DirectedGraphComponent.propDecorators = {
+    'legend': [{ type: core_1.Input },],
+    'nodes': [{ type: core_1.Input },],
+    'links': [{ type: core_1.Input },],
+    'activeEntries': [{ type: core_1.Input },],
+    'orientation': [{ type: core_1.Input },],
+    'curve': [{ type: core_1.Input },],
+    'draggingEnabled': [{ type: core_1.Input },],
+    'nodeHeight': [{ type: core_1.Input },],
+    'nodeMaxHeight': [{ type: core_1.Input },],
+    'nodeMinHeight': [{ type: core_1.Input },],
+    'nodeWidth': [{ type: core_1.Input },],
+    'nodeMinWidth': [{ type: core_1.Input },],
+    'nodeMaxWidth': [{ type: core_1.Input },],
+    'panOffsetX': [{ type: core_1.Input },],
+    'panOffsetY': [{ type: core_1.Input },],
+    'panningEnabled': [{ type: core_1.Input },],
+    'zoomLevel': [{ type: core_1.Input },],
+    'zoomSpeed': [{ type: core_1.Input },],
+    'minZoomLevel': [{ type: core_1.Input },],
+    'maxZoomLevel': [{ type: core_1.Input },],
+    'activate': [{ type: core_1.Output },],
+    'deactivate': [{ type: core_1.Output },],
+    'linkTemplate': [{ type: core_1.ContentChild, args: ['linkTemplate',] },],
+    'nodeTemplate': [{ type: core_1.ContentChild, args: ['nodeTemplate',] },],
+    'defsTemplate': [{ type: core_1.ContentChild, args: ['defsTemplate',] },],
+    'chart': [{ type: core_1.ViewChild, args: [ngx_charts_1.ChartComponent, { read: core_1.ElementRef },] },],
+    'nodeElements': [{ type: core_1.ViewChildren, args: ['nodeElement',] },],
+    'linkElements': [{ type: core_1.ViewChildren, args: ['linkElement',] },],
+    'groupResultsBy': [{ type: core_1.Input },],
+    'onMouseMove': [{ type: core_1.HostListener, args: ['document:mousemove', ['$event'],] },],
+    'onMouseUp': [{ type: core_1.HostListener, args: ['document:mouseup',] },],
+};
 exports.DirectedGraphComponent = DirectedGraphComponent;
 //# sourceMappingURL=directed-graph.component.js.map

@@ -1,5 +1,5 @@
 "use strict";
-var core_1 = require('@angular/core');
+var core_1 = require("@angular/core");
 /**
  * Mousewheel directive
  * https://github.com/SodhanaLibrary/angular2-examples/blob/master/app/mouseWheelDirective/mousewheel.directive.ts
@@ -39,19 +39,19 @@ var MouseWheelDirective = (function () {
             event.preventDefault();
         }
     };
-    MouseWheelDirective.decorators = [
-        { type: core_1.Directive, args: [{ selector: '[mouseWheel]' },] },
-    ];
-    /** @nocollapse */
-    MouseWheelDirective.ctorParameters = function () { return []; };
-    MouseWheelDirective.propDecorators = {
-        'mouseWheelUp': [{ type: core_1.Output },],
-        'mouseWheelDown': [{ type: core_1.Output },],
-        'onMouseWheelChrome': [{ type: core_1.HostListener, args: ['mousewheel', ['$event'],] },],
-        'onMouseWheelFirefox': [{ type: core_1.HostListener, args: ['DOMMouseScroll', ['$event'],] },],
-        'onMouseWheelIE': [{ type: core_1.HostListener, args: ['onmousewheel', ['$event'],] },],
-    };
     return MouseWheelDirective;
 }());
+MouseWheelDirective.decorators = [
+    { type: core_1.Directive, args: [{ selector: '[mouseWheel]' },] },
+];
+/** @nocollapse */
+MouseWheelDirective.ctorParameters = function () { return []; };
+MouseWheelDirective.propDecorators = {
+    'mouseWheelUp': [{ type: core_1.Output },],
+    'mouseWheelDown': [{ type: core_1.Output },],
+    'onMouseWheelChrome': [{ type: core_1.HostListener, args: ['mousewheel', ['$event'],] },],
+    'onMouseWheelFirefox': [{ type: core_1.HostListener, args: ['DOMMouseScroll', ['$event'],] },],
+    'onMouseWheelIE': [{ type: core_1.HostListener, args: ['onmousewheel', ['$event'],] },],
+};
 exports.MouseWheelDirective = MouseWheelDirective;
 //# sourceMappingURL=mouse-wheel.directive.js.map
